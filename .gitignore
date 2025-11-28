@@ -5,3 +5,7 @@
 # Ignore node_modules at root and in all child folders
 node_modules/
 **/node_modules/
+
+# Ignore environment files with secrets
+.env
+**/.env
