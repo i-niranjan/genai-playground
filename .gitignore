@@ -1,0 +1,7 @@
+# Ignore .history directory at root and in all child folders
+.history/
+**/.history/
+
+# Ignore node_modules at root and in all child folders
+node_modules/
+**/node_modules/
