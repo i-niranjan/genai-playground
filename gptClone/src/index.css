@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+span,
+button,
+div {
+  font-family: "Nunito", sans-serif;
+}
+.prompt-wrapper {
+  width: 70%;
+  border-radius: 1rem;
+  border: 1.5px solid #000;
+  box-shadow: 2.5px 3px 0 #000;
+  overflow: hidden;
+  transition: ease 0.25s;
+}
+
+.prompt-wrapper:focus-within {
+  box-shadow: 5.5px 7px 0 #000;
+}
+
+.prompt-input {
+  padding: 0.875rem;
+  font-size: 1rem;
+  outline: none;
+  max-height: calc(1.5rem * 7);
+  background: transparent;
+}
+
+/* scrollbar styling */
+.prompt-input::-webkit-scrollbar {
+  width: 8px;
+}
+
+.prompt-input::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.prompt-input::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
