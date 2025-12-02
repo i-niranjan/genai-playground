@@ -14,6 +14,7 @@ function PromptDiv() {
   return (
     <div className="relative">
       <PromptInput placeholder="Ask Anything..." />
+      <Button>Hey</Button>
     </div>
   );
 }
