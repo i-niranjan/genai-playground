@@ -4,24 +4,25 @@ import React, { useRef } from "react";
 
 interface InputProps {
   placeholder?: string;
-
+  onSend: (value: string) => void;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
 }
 
-function PromptDiv({ className }: { className?: string }) {
-  return (
-    <div className="relative w-full h-full ">
-      <PromptInput className={className} placeholder="Ask Anything..." />
-    </div>
-  );
-}
+// function PromptDiv({ className }: { className?: string }) {
+//   return (
+//     <div className="relative w-full h-full ">
+//       <PromptInput className={className} placeholder="Ask Anything..." />
+//     </div>
+//   );
+// }
 
 function PromptInput({
   placeholder = "",
   className,
   value,
+  onSend,
   onChange,
 }: InputProps) {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -45,8 +46,9 @@ function PromptInput({
         rows={2}
       />
       <button
-        disabled={!value?.trim()}
-        className="absolute right-2 bottom-2 p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={() => onSend(value!)}
+        // disabled={!value?.trim()}
+        className="absolute right-2 bottom-2 p-2 rounded-lg bg-neutral-600 text-white hover:bg-neutral-900 duration-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,4 +69,4 @@ function PromptInput({
   );
 }
 
-export { PromptInput, PromptDiv };
+export { PromptInput };
