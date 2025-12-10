@@ -2,11 +2,11 @@ import express from "express";
 import { generate } from "./chatbot.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+import cors from "cors";
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors());
 // Routes
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the API" });
@@ -17,10 +17,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.post("/chat", async (req, res) => {
-  const { message } = req.body;
-
-  const result = await generate(message);
-  res.json({ message: result });
+  const { message, sessionId } = req.body;
+  const reply = await generate(sessionId, message);
+  res.json({ message: reply });
 });
 
 // Start server
