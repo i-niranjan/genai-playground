@@ -12,16 +12,13 @@ function ChatBox() {
   async function inputValue(value: string) {
     if (!value) return;
 
-    // Add user msg to UI
     setMessages((prev) => [...prev, { role: "user", text: value }]);
     setInput("");
     setLoading(true);
 
     try {
-      // Send ONLY new message to backend
       const res = await callLLM(value);
 
-      // Add agent reply to UI
       setMessages((prev) => [...prev, { role: "agent", text: res.message }]);
     } catch (err) {
       console.log(err);
