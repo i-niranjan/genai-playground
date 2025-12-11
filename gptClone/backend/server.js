@@ -17,9 +17,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/getChat", async (req, res) => {
-  const { sessionId } = req.body;
+  const { sessionId } = req.query;
   const messages = await getMessages(sessionId);
-  res.json({ messages: messages });
+  res.json({ messages });
 });
 
 app.post("/api/chat", async (req, res) => {
