@@ -96,13 +96,10 @@ Do NOT manually output JSON. Let the system handle tool calls automatically.
 }
 
 export function getMessages(sessionId) {
-  console.log(sessionId);
-  console.log("All session keys:", [...sessions.keys()]);
-
   const messages = sessions.get(sessionId);
-  console.log(JSON.stringify(messages, null, 2));
 
-  return messages;
+  const filtered = messages?.filter((m) => m.role !== "system");
+  return filtered;
 }
 
 async function webSearch({ query }) {
