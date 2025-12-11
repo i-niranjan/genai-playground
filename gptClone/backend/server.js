@@ -1,5 +1,5 @@
 import express from "express";
-import { generate } from "./chatbot.js";
+import { generate, getMessages } from "./chatbot.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 import cors from "cors";
@@ -16,7 +16,13 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-app.post("/chat", async (req, res) => {
+app.get("/api/getChat", async (req, res) => {
+  const { sessionId } = req.body;
+  const messages = await getMessages(sessionId);
+  res.json({ messages: messages });
+});
+
+app.post("/api/chat", async (req, res) => {
   const { message, sessionId } = req.body;
   const reply = await generate(sessionId, message);
   res.json({ message: reply });

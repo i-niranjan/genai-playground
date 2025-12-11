@@ -95,6 +95,16 @@ Do NOT manually output JSON. Let the system handle tool calls automatically.
   }
 }
 
+export function getMessages(sessionId) {
+  console.log(sessionId);
+  console.log("All session keys:", [...sessions.keys()]);
+
+  const messages = sessions.get(sessionId);
+  console.log(JSON.stringify(messages, null, 2));
+
+  return messages;
+}
+
 async function webSearch({ query }) {
   const response = await tvly.search(query);
   return response.results.map((r) => r.content).join("\n\n");
