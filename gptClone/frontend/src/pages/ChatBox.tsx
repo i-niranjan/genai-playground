@@ -1,20 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PromptInput } from "../ui/promptInput";
-import { callLLM } from "../services/callLLM";
+import { callLLM, getChat } from "../services/callLLM";
 import { useLocation } from "react-router";
 
 function ChatBox() {
   const location = useLocation();
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const initialPrompt = location?.state?.prompt;
   const alreadySent = useRef(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: string; text: string }[]>(
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
   );
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (messages.length === 0) {
+      (async () => {
+        const { messages } = await getChat();
+        if (!messages) return;
+
+        setMessages(messages);
+        setHistoryLoaded(true);
+      })();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!historyLoaded) return;
     if (!initialPrompt) return;
     if (alreadySent.current) return;
 
@@ -25,14 +39,17 @@ function ChatBox() {
   async function inputValue(value: string) {
     if (!value) return;
 
-    setMessages((prev) => [...prev, { role: "user", text: value }]);
+    setMessages((prev) => [...prev, { role: "user", content: value }]);
     setInput("");
     setLoading(true);
 
     try {
       const res = await callLLM(value);
 
-      setMessages((prev) => [...prev, { role: "agent", text: res.message }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: res.message },
+      ]);
     } catch (err) {
       console.log(err);
     }
@@ -46,9 +63,9 @@ function ChatBox() {
         <div className="flex flex-col gap-2 pb-32">
           {messages.map((msg, i) =>
             msg.role === "user" ? (
-              <UserMessage key={i} msg={msg.text} index={i} />
+              <UserMessage key={i} msg={msg.content} index={i} />
             ) : (
-              <AgentMessage key={i} msg={msg.text} index={i} />
+              <AgentMessage key={i} msg={msg.content} index={i} />
             )
           )}
 
