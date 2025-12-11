@@ -44,6 +44,12 @@ function PromptInput({
         placeholder={placeholder}
         onChange={onChange}
         rows={2}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            onSend(value!);
+          }
+        }}
       />
       <button
         onClick={() => onSend(value!)}

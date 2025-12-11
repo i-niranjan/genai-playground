@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PromptInput } from "../ui/promptInput";
 import { callLLM } from "../services/callLLM";
+import { useLocation } from "react-router";
 
 function ChatBox() {
+  const location = useLocation();
+  const initialPrompt = location?.state?.prompt;
+  const alreadySent = useRef(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: string; text: string }[]>(
     []
   );
+
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!initialPrompt) return;
+    if (alreadySent.current) return;
+
+    inputValue(initialPrompt);
+    alreadySent.current = true;
+  }, [initialPrompt]);
 
   async function inputValue(value: string) {
     if (!value) return;
@@ -29,13 +42,13 @@ function ChatBox() {
 
   return (
     <div className="h-screen w-full flex justify-center p-2">
-      <div className="relative overflow-y-auto max-w-2xl w-full border-l border-r border-neutral-300 p-10">
+      <div className="relative overflow-y-auto max-w-2xl w-full  p-10">
         <div className="flex flex-col gap-2 pb-32">
           {messages.map((msg, i) =>
             msg.role === "user" ? (
-              <UserMessage key={i} msg={msg.text} />
+              <UserMessage key={i} msg={msg.text} index={i} />
             ) : (
-              <AgentMessage key={i} msg={msg.text} />
+              <AgentMessage key={i} msg={msg.text} index={i} />
             )
           )}
 
@@ -58,26 +71,43 @@ function ChatBox() {
   );
 }
 
-const UserMessage = ({ msg }: { msg: string }) => (
-  <div className="w-full">
-    <div className="bg-neutral-100 rounded-sm shadow-xs px-4 py-1 w-max">
-      {msg}
+const UserMessage = ({ msg, index }: { msg: string; index: number }) => (
+  <div
+    className="flex justify-end animate-slideInRight"
+    style={{ animationDelay: `${index * 0.05}s` }}
+  >
+    <div className="max-w-[75%] bg-slate-900 text-white rounded-3xl rounded-tr-lg px-5 py-3 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+      <p className="text-[15px] leading-relaxed">{msg}</p>
     </div>
   </div>
 );
 
-const AgentMessage = ({ msg }: { msg: string }) => (
-  <div className="w-full flex justify-end">
-    <div className="bg-neutral-300 max-w-sm rounded-sm shadow-xs px-4 py-1 w-max">
-      {msg}
+const AgentMessage = ({ msg, index }: { msg: string; index: number }) => (
+  <div
+    className="flex justify-start animate-slideInLeft"
+    style={{ animationDelay: `${index * 0.05}s` }}
+  >
+    <div className="max-w-[75%] bg-white/80 backdrop-blur-sm text-slate-800 rounded-3xl rounded-tl-lg px-5 py-3 shadow-sm border border-slate-200/50 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+      <p className="text-[15px] leading-relaxed">{msg}</p>
     </div>
   </div>
 );
 
 const LoadingMessage = () => (
-  <div className="w-full flex justify-end">
-    <div className="bg-neutral-300 animate-pulse rounded-sm shadow-xs px-4 py-1 w-max">
-      Thinking...
+  <div className="flex justify-start animate-slideInLeft">
+    <div className="bg-white/80 backdrop-blur-sm rounded-3xl rounded-tl-lg px-5 py-3 shadow-sm border border-slate-200/50">
+      <div className="flex space-x-1.5">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="w-2 h-2 bg-slate-400 rounded-full"
+            style={{
+              animation: "bounce 1.4s ease-in-out infinite",
+              animationDelay: `${i * 0.2}s`,
+            }}
+          />
+        ))}
+      </div>
     </div>
   </div>
 );

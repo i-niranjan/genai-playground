@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import clsx from "clsx";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 
 export default function Home() {
   const ref = useRef<HTMLTextAreaElement | null>(null);
+  const [value, setValue] = useState<string>();
   const navigate = useNavigate();
 
   const handleInput = () => {
@@ -13,6 +14,10 @@ export default function Home() {
 
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
+  };
+
+  const sendPrompt = () => {
+    navigate("/chat", { state: { prompt: value } });
   };
 
   return (
@@ -37,11 +42,18 @@ export default function Home() {
               ref={ref}
               onInput={handleInput}
               className="prompt-input overflow-y-auto resize-none w-full"
-              // value={"value"}
+              onChange={(e) => setValue(e.target.value)}
               placeholder={"Ask Anything..."}
               rows={2}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendPrompt();
+                }
+              }}
             />
             <button
+              onClick={sendPrompt}
               // disabled={!value?.trim()}
               className="absolute right-2 z-50 bottom-2 p-2 rounded-lg bg-neutral-600 text-white hover:bg-neutral-900 duration-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
