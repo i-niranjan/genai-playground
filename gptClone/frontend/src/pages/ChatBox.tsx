@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { PromptInput } from "../ui/promptInput";
 import { callLLM, getChat } from "../services/callLLM";
 import { useLocation } from "react-router";
+import { motion } from "motion/react";
 
 function ChatBox() {
   const location = useLocation();
@@ -12,11 +13,15 @@ function ChatBox() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
   );
-
+  const sessionId = localStorage.getItem("session_id");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (messages.length === 0) {
+      if (!sessionId) {
+        setHistoryLoaded(true);
+        return;
+      }
       (async () => {
         const { messages } = await getChat();
         if (!messages) return;
@@ -28,7 +33,7 @@ function ChatBox() {
   }, []);
 
   useEffect(() => {
-    if (!historyLoaded) return;
+    if (historyLoaded) return;
     if (!initialPrompt) return;
     if (alreadySent.current) return;
 
@@ -89,25 +94,47 @@ function ChatBox() {
 }
 
 const UserMessage = ({ msg, index }: { msg: string; index: number }) => (
-  <div
-    className="flex justify-end animate-slideInRight"
-    style={{ animationDelay: `${index * 0.05}s` }}
+  <motion.div
+    initial={{ opacity: 0, x: 50, scale: 0.9 }}
+    animate={{ opacity: 1, x: 0, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.9 }}
+    transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay: index * 0.03,
+    }}
+    className="flex justify-end"
   >
-    <div className="max-w-[75%] bg-slate-900 text-white rounded-3xl rounded-tr-lg px-5 py-3 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+    <motion.div
+      whileHover={{ scale: 1.02, y: -2 }}
+      transition={{ duration: 0.2 }}
+      className="max-w-[75%] bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-2xl rounded-tr-md px-5 py-3.5 shadow-md"
+    >
       <p className="text-[15px] leading-relaxed">{msg}</p>
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 );
 
 const AgentMessage = ({ msg, index }: { msg: string; index: number }) => (
-  <div
-    className="flex justify-start animate-slideInLeft"
-    style={{ animationDelay: `${index * 0.05}s` }}
+  <motion.div
+    initial={{ opacity: 0, x: -50, scale: 0.9 }}
+    animate={{ opacity: 1, x: 0, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.9 }}
+    transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay: index * 0.03,
+    }}
+    className="flex justify-start"
   >
-    <div className="max-w-[75%] bg-white/80 backdrop-blur-sm text-slate-800 rounded-3xl rounded-tl-lg px-5 py-3 shadow-sm border border-slate-200/50 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+    <motion.div
+      whileHover={{ scale: 1.02, y: -2 }}
+      transition={{ duration: 0.2 }}
+      className="max-w-[75%] bg-white/90 backdrop-blur-sm text-slate-800 rounded-2xl rounded-tl-md px-5 py-3.5 shadow-md border border-slate-200/30"
+    >
       <p className="text-[15px] leading-relaxed">{msg}</p>
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 );
 
 const LoadingMessage = () => (
