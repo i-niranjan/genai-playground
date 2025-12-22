@@ -1,0 +1,18 @@
+{
+  "name": "companychatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/community": "^1.1.1",
+    "@langchain/core": "^1.1.7",
+    "@langchain/textsplitters": "^1.0.1",
+    "pdf-parse": "^1.1.4"
+  }
+}
