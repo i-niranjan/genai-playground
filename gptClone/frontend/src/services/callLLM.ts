@@ -18,6 +18,7 @@ export async function callLLM(inputText: string) {
 }
 export async function getChat() {
   const sessionId = getSessionId();
+
   try {
     const res = await axios.get(`${API_URL}/api/getChat`, {
       params: {
